@@ -1,69 +1,75 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useObservations } from "../contexts/ObservationContext";
-import { useTheme } from "../contexts/ThemeContext"; 
+import { useTheme } from "../contexts/ThemeContext";
 
 function CreateObservation() {
+  // Destructure functions and state from custom hooks
   const { addObservation, assignees, addAssignee } = useObservations();
-  const { darkMode } = useTheme(); 
+  const { darkMode } = useTheme();
+
+  // Initialize state for form fields
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [severity, setSeverity] = useState("High");
+  const [severity, setSeverity] = useState("High"); 
   const [assignedTo, setAssignedTo] = useState("");
-  const [file, setFile] = useState(null);
-  const [newAssignee, setNewAssignee] = useState("");
-
+  const [file, setFile] = useState(null); 
+  const [newAssignee, setNewAssignee] = useState(""); 
   const navigate = useNavigate();
-
   const severityOptions = ["High", "Medium", "Low"];
 
+  // Event handlers for form field changes
   const handleTitleChange = (event) => setTitle(event.target.value);
   const handleDescriptionChange = (event) => setDescription(event.target.value);
   const handleSeverityChange = (event) => setSeverity(event.target.value);
   const handleAssignedToChange = (event) => setAssignedTo(event.target.value);
-  const handleFileChange = (event) => setFile(event.target.files[0]);
+  const handleFileChange = (event) => setFile(event.target.files[0]); 
 
+  // Handler for adding a new assignee
   const handleAddAssignee = () => {
     if (newAssignee.trim() && !assignees.includes(newAssignee.trim())) {
-      addAssignee(newAssignee.trim());
-      setAssignedTo(newAssignee.trim());
-      setNewAssignee("");
+      addAssignee(newAssignee.trim()); 
+      setAssignedTo(newAssignee.trim()); 
+      setNewAssignee(""); 
     } else {
-      alert("Assignee already exists or input is empty.");
+      alert("Assignee already exists or input is empty."); 
     }
   };
 
+  // Handler for form submission
   const handleSubmit = (event) => {
-    event.preventDefault();
-
+    event.preventDefault(); 
     if (!assignedTo) {
       alert("Please add and select an assignee.");
       return;
     }
 
-    let evidenceBase64 = null;
+    let evidenceBase64 = null; 
 
+    // Function to process and add the observation
     const processObservation = () => {
       const newObservationData = {
         title,
         description,
         severity,
         assignedTo,
-        evidence: evidenceBase64,
+        evidence: evidenceBase64, 
       };
 
-      addObservation(newObservationData);
-      navigate("/observations");
+      addObservation(newObservationData); 
+      navigate("/observations"); 
     };
 
+    // If a file is attached, read it as a Data URL
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        evidenceBase64 = reader.result;
-        processObservation();
+        evidenceBase64 = reader.result; // Store the base64 string
+        processObservation(); // Then process the observation
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file); // Start reading the file
     } else {
+      // If no file is attached, directly process the observation
       processObservation();
     }
   };
@@ -84,6 +90,7 @@ function CreateObservation() {
           onSubmit={handleSubmit}
           className={`${darkMode ? 'bg-gray-800 shadow-lg border border-gray-700' : 'bg-white shadow-xl border border-gray-100'} rounded-xl px-8 pt-8 pb-8 mb-8`}
         >
+          {/* Title Input Field */}
           <div className="mb-6">
             <label
               className={`block ${darkMode ? 'text-gray-300' : 'text-gray-700'} font-medium mb-2`}
@@ -102,6 +109,7 @@ function CreateObservation() {
             />
           </div>
 
+          {/* Description Textarea */}
           <div className="mb-6">
             <label
               className={`block ${darkMode ? 'text-gray-300' : 'text-gray-700'} font-medium mb-2`}
@@ -120,6 +128,7 @@ function CreateObservation() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            {/* Severity Dropdown */}
             <div>
               <label
                 className={`block ${darkMode ? 'text-gray-300' : 'text-gray-700'} font-medium mb-2`}
@@ -141,6 +150,7 @@ function CreateObservation() {
               </select>
             </div>
 
+            {/* Assignee Selection and Add New Assignee */}
             <div>
               <label
                 className={`block ${darkMode ? 'text-gray-300' : 'text-gray-700'} font-medium mb-2`}
@@ -189,6 +199,7 @@ function CreateObservation() {
             </div>
           </div>
 
+          {/* File Attachment Input */}
           <div className="mb-8">
             <label
               className={`block ${darkMode ? 'text-gray-300' : 'text-gray-700'} font-medium mb-2`}
@@ -206,10 +217,11 @@ function CreateObservation() {
             </div>
           </div>
 
+          {/* Action Buttons (Cancel and Create) */}
           <div className="flex items-center justify-end space-x-4 pt-4 border-t-2 ${darkMode ? 'border-gray-700' : 'border-gray-100'}">
             <button
               type="button"
-              onClick={() => navigate("/observations")}
+              onClick={() => navigate("/observations")} 
               className={`px-5 py-2.5 rounded-lg border ${darkMode ? 'border-gray-600 text-gray-300 bg-gray-700 hover:bg-gray-600' : 'border-gray-300 text-gray-700 bg-white hover:bg-gray-50'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200`}
             >
               Cancel

@@ -1,26 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useObservations } from "../contexts/ObservationContext";
-import { useTheme } from "../contexts/ThemeContext"; 
+import { useTheme } from "../contexts/ThemeContext";
 
 function EditObservationForm() {
+  // Get the observation ID from the URL parameters.
   const { id } = useParams();
   const navigate = useNavigate();
+  // Destructure necessary functions and data from the ObservationContext.
   const { observations, updateObservation, assignees, addAssignee } = useObservations();
-  const { darkMode } = useTheme(); 
+  const { darkMode } = useTheme();
 
+  // Find the specific observation to edit using the ID.
   const observation = observations.find((obs) => obs.id === id);
 
+  // State variables to hold the form input values.
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [severity, setSeverity] = useState("High");
   const [assignedTo, setAssignedTo] = useState("");
-  const [file, setFile] = useState(null);
-  const [currentEvidence, setCurrentEvidence] = useState(null);
-  const [newAssignee, setNewAssignee] = useState("");
-
+  const [file, setFile] = useState(null); // For new evidence file upload
+  const [currentEvidence, setCurrentEvidence] = useState(null); // To display existing evidence
+  const [newAssignee, setNewAssignee] = useState(""); // For adding a new assignee
   const severityOptions = ["High", "Medium", "Low"];
 
+  // Populate form fields with existing observation data when the component mounts or observation changes.
   useEffect(() => {
     if (observation) {
       setTitle(observation.title);
@@ -29,13 +33,14 @@ function EditObservationForm() {
       setAssignedTo(observation.assignedTo);
       setCurrentEvidence(observation.evidence);
     }
-  }, [observation]);
+  }, [observation]); // Depend on 'observation' to re-run when it's loaded or updated
 
+  // Handle adding a new assignee to the list.
   const handleAddAssignee = () => {
     if (newAssignee.trim() && !assignees.includes(newAssignee.trim())) {
-      addAssignee(newAssignee.trim());
-      setAssignedTo(newAssignee.trim());
-      setNewAssignee("");
+      addAssignee(newAssignee.trim()); 
+      setAssignedTo(newAssignee.trim()); 
+      setNewAssignee(""); 
     } else if (assignees.includes(newAssignee.trim())) {
       alert("Assignee already exists.");
     } else {
@@ -43,48 +48,53 @@ function EditObservationForm() {
     }
   };
 
+  // Handle the form submission.
   const handleSubmit = (event) => {
-    event.preventDefault();
+    event.preventDefault(); 
 
     if (!observation) {
       alert("Observation not found!");
-      navigate("/observations");
+      navigate("/observations"); 
       return;
     }
 
+    // Basic validation: ensure an assignee is selected.
     if (!assignedTo) {
       alert("Please select or add an assignee.");
       return;
     }
 
-    let evidenceToSave = currentEvidence;
+    let evidenceToSave = currentEvidence; 
 
+    // Function to update the observation data and navigate.
     const processUpdate = () => {
       const updatedObservationData = {
-        ...observation,
+        ...observation, 
         title,
         description,
         severity,
         assignedTo,
-        evidence: evidenceToSave,
-        updatedAt: new Date().toISOString(),
+        evidence: evidenceToSave, 
+        updatedAt: new Date().toISOString(), 
       };
-      updateObservation(observation.id, updatedObservationData);
-      navigate(`/observations/${observation.id}`);
+      updateObservation(observation.id, updatedObservationData); 
+      navigate(`/observations/${observation.id}`); 
     };
 
+    // If a new file is selected, read it as a Data URL before updating.
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        evidenceToSave = reader.result;
-        processUpdate();
+        evidenceToSave = reader.result; 
+        processUpdate(); 
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file); 
     } else {
       processUpdate();
     }
   };
 
+  // Display a loading message if the observation data is not yet available.
   if (!observation) {
     return (
       <div className={`flex items-center justify-center min-h-screen text-xl font-semibold ${darkMode ? 'bg-gray-900 text-gray-300' : 'bg-gray-50 text-gray-700'}`}>
@@ -107,6 +117,7 @@ function EditObservationForm() {
           onSubmit={handleSubmit}
           className={`${darkMode ? 'bg-gray-800 shadow-lg border border-gray-700' : 'bg-white shadow-xl border border-gray-100'} rounded-xl px-8 pt-8 pb-8 mb-8`}
         >
+          {/* Title Input */}
           <div className="mb-6">
             <label
               className={`block ${darkMode ? 'text-gray-300' : 'text-gray-700'} font-medium mb-2`}
@@ -125,6 +136,7 @@ function EditObservationForm() {
             />
           </div>
 
+          {/* Description Textarea */}
           <div className="mb-6">
             <label
               className={`block ${darkMode ? 'text-gray-300' : 'text-gray-700'} font-medium mb-2`}
@@ -143,6 +155,7 @@ function EditObservationForm() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            {/* Severity Dropdown */}
             <div>
               <label
                 className={`block ${darkMode ? 'text-gray-300' : 'text-gray-700'} font-medium mb-2`}
@@ -164,6 +177,7 @@ function EditObservationForm() {
               </select>
             </div>
 
+            {/* Assign To Dropdown and Add New Assignee Input */}
             <div>
               <label
                 className={`block ${darkMode ? 'text-gray-300' : 'text-gray-700'} font-medium mb-2`}
@@ -212,6 +226,7 @@ function EditObservationForm() {
             </div>
           </div>
 
+          {/* File Attachment Input */}
           <div className="mb-8">
             <label
               className={`block ${darkMode ? 'text-gray-300' : 'text-gray-700'} font-medium mb-2`}
@@ -227,11 +242,13 @@ function EditObservationForm() {
                 onChange={(e) => setFile(e.target.files[0])}
               />
             </div>
+            {/* Display message about current evidence if no new file is selected */}
             {currentEvidence && !file && (
               <p className={`mt-2 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                 Current evidence attached. Upload a new file to replace it.
               </p>
             )}
+            {/* Display the name of the newly selected file */}
             {file && (
               <p className={`mt-2 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                 New file selected:{" "}
@@ -240,6 +257,7 @@ function EditObservationForm() {
             )}
           </div>
 
+          {/* Form Actions (Cancel and Save Buttons) */}
           <div className={`flex items-center justify-end space-x-4 pt-4 border-t ${darkMode ? 'border-gray-700' : 'border-gray-100'}`}>
             <button
               type="button"

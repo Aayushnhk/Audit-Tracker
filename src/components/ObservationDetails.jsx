@@ -1,17 +1,19 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useObservations } from "../contexts/ObservationContext";
-import { useTheme } from "../contexts/ThemeContext"; 
+import { useTheme } from "../contexts/ThemeContext";
 
 function ObservationDetails() {
+  // Initialize hooks for navigation, URL parameters, observations data, and theme settings.
   const navigate = useNavigate();
   const { id } = useParams();
   const { observations } = useObservations();
-  const { darkMode } = useTheme(); 
+  const { darkMode } = useTheme();
 
+  // Find the specific observation based on the ID from the URL parameters.
   const observation = observations.find((obs) => obs.id === id);
 
-  // If the observation is not found, display a "not found" message and a back button
+  // If no observation is found with the given ID, display a "not found" message
   if (!observation) {
     return (
       <div className={`flex items-center justify-center min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-gray-50 to-gray-100'} transition-colors duration-200`}>
@@ -30,7 +32,7 @@ function ObservationDetails() {
     );
   }
 
-  // Determine severity badge colors based on dark mode
+  // Helper function to determine the Tailwind CSS classes for severity badges
   const getSeverityBadgeClasses = (severity) => {
     if (darkMode) {
       switch (severity) {
@@ -57,7 +59,7 @@ function ObservationDetails() {
     }
   };
 
-  // Determine status badge colors based on dark mode
+  // Helper function to determine the Tailwind CSS classes for status badges
   const getStatusBadgeClasses = (status) => {
     if (darkMode) {
       switch (status) {
@@ -95,7 +97,7 @@ function ObservationDetails() {
         </div>
 
         <div className={`${darkMode ? 'bg-gray-800 shadow-lg border border-gray-700' : 'bg-white shadow-xl border border-gray-100'} rounded-xl overflow-hidden`}>
-          {/* Header section of the details card */}
+          {/* Header section */}
           <div className={`px-6 py-5 border-b ${darkMode ? 'border-gray-700 bg-gray-700' : 'border-gray-200 bg-gray-50'}`}>
             <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
               {observation.title}
@@ -114,6 +116,7 @@ function ObservationDetails() {
               </div>
               <div>
                 <p className={`text-sm font-medium ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Severity</p>
+                {/* Dynamic badge classes based on severity */}
                 <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getSeverityBadgeClasses(observation.severity)}`}>
                   {observation.severity}
                 </span>
@@ -128,6 +131,7 @@ function ObservationDetails() {
               <div>
                 <p className={`text-sm font-medium ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Created At</p>
                 <p className={`mt-1 ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>
+                  {/* Format the creation date to a locale-specific string */}
                   {new Date(observation.createdAt).toLocaleString()}
                 </p>
               </div>
@@ -138,15 +142,18 @@ function ObservationDetails() {
                 Current Status
               </p>
               <div className="mt-2">
+                {/* Dynamic badge classes based on status */}
                 <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClasses(observation.status)}`}>
                   {observation.status}
                 </span>
               </div>
             </div>
 
+            {/* Conditionally render the evidence section if evidence exists */}
             {observation.evidence && (
               <div className="mb-6">
                 <p className={`text-sm font-medium ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Evidence</p>
+                {/* Render evidence as an image if it's a base64 image, otherwise as a clickable link */}
                 {observation.evidence.startsWith("data:image") ? (
                   <img
                     src={observation.evidence}
@@ -161,6 +168,7 @@ function ObservationDetails() {
                     className="mt-2 text-blue-600 hover:underline flex items-center"
                   >
                     View Attached File
+                    {/* External link icon */}
                     <svg
                       className="ml-1 h-4 w-4"
                       fill="none"
@@ -180,7 +188,7 @@ function ObservationDetails() {
             )}
           </div>
 
-          {/* Footer section with navigation buttons */}
+          {/* Footer section with navigation button */}
           <div className={`px-6 py-4 flex justify-end space-x-3 ${darkMode ? 'bg-gray-700 border-t border-gray-600' : 'bg-gray-50 border-t border-gray-200'}`}>
             <button
               onClick={() => navigate("/observations")}

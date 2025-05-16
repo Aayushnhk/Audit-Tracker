@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
@@ -24,61 +25,72 @@ import {
   InformationCircleIcon,
 } from "@heroicons/react/24/outline";
 
+// Main functional component for the Observations List
 function ObservationsList() {
-  const { darkMode } = useTheme();
+  // Destructure values from custom hooks
+  const { darkMode } = useTheme(); 
   const { observations, updateObservationStatus, deleteObservation } =
-    useObservations();
-  const [statusFilter, setStatusFilter] = useState("");
-  const [severityFilter, setSeverityFilter] = useState("");
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [observationToDelete, setObservationToDelete] = useState(null);
-  const navigate = useNavigate();
+    useObservations(); 
 
+  // State variables for managing filters and modal visibility
+  const [statusFilter, setStatusFilter] = useState(""); 
+  const [severityFilter, setSeverityFilter] = useState(""); 
+  const [showDeleteModal, setShowDeleteModal] = useState(false); 
+  const [observationToDelete, setObservationToDelete] = useState(null); 
+  const navigate = useNavigate(); 
+
+  // Define options for status and severity filters
   const statusOptions = ["", "Open", "In Progress", "Closed"];
   const severityOptions = ["", "High", "Medium", "Low"];
 
+  // Filter and sort observations based on current filter states
   const filteredObservations = observations
-    .filter((obs) => !statusFilter || obs.status === statusFilter)
-    .filter((obs) => !severityFilter || obs.severity === severityFilter)
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    .filter((obs) => !statusFilter || obs.status === statusFilter) 
+    .filter((obs) => !severityFilter || obs.severity === severityFilter) 
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); 
 
+  // Calculate counts for each status to be used in the chart
   const statusCounts = statusOptions.slice(1).map((status) => ({
     status,
     count: observations.filter((obs) => obs.status === status).length,
   }));
 
+  // Event handler for initiating the delete process
   const handleDeleteClick = (id) => {
-    setObservationToDelete(id);
-    setShowDeleteModal(true);
+    setObservationToDelete(id); 
+    setShowDeleteModal(true); 
   };
 
+  // Event handler for confirming the delete action
   const confirmDelete = () => {
     if (observationToDelete) {
-      deleteObservation(observationToDelete);
+      deleteObservation(observationToDelete); 
     }
-    setShowDeleteModal(false);
-    setObservationToDelete(null);
+    setShowDeleteModal(false); 
+    setObservationToDelete(null); 
   };
 
+  // Event handler for canceling the delete action
   const cancelDelete = () => {
-    setShowDeleteModal(false);
-    setObservationToDelete(null);
+    setShowDeleteModal(false); 
+    setObservationToDelete(null); 
   };
 
-  // Colors for dark/light modes
+  // Define color schemes for different statuses based on dark/light mode
   const statusColors = {
     light: {
-      Open: "#ef4444",
-      "In Progress": "#f59e0b",
-      Closed: "#10b981",
+      Open: "#ef4444", 
+      "In Progress": "#f59e0b", 
+      Closed: "#10b981", 
     },
     dark: {
-      Open: "#dc2626",
-      "In Progress": "#d97706",
-      Closed: "#059669",
+      Open: "#dc2626", 
+      "In Progress": "#d97706", 
+      Closed: "#059669", 
     },
   };
 
+  // Tailwind CSS classes for severity badges based on dark/light mode
   const severityColors = {
     light: {
       High: "bg-red-100 text-red-800",
@@ -92,13 +104,15 @@ function ObservationsList() {
     },
   };
 
+  // Render the component UI
   return (
+    // Main container div with dynamic background based on dark mode
     <div
       className={`min-h-screen ${
         darkMode ? "bg-gray-900" : "bg-gradient-to-br from-gray-50 to-gray-100"
       } p-6 transition-colors duration-200`}
     >
-      {/* Delete Modal */}
+      {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div
@@ -165,7 +179,7 @@ function ObservationsList() {
       )}
 
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
+        {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
             <h1
@@ -181,6 +195,7 @@ function ObservationsList() {
               Monitor and manage all security observations
             </p>
           </div>
+          {/* Button to navigate to New Observation form */}
           <button
             onClick={() => navigate("/observations/new")}
             className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition duration-200 flex items-center gap-2 shadow-sm"
@@ -190,8 +205,8 @@ function ObservationsList() {
           </button>
         </div>
 
-        {/* Status Distribution Chart */}
-        {observations.length > 0 && (
+        {/* Status Distribution Chart Section (conditionally rendered) */}
+        {observations.length > 0 && ( 
           <div
             className={`rounded-lg shadow border ${
               darkMode
@@ -215,6 +230,7 @@ function ObservationsList() {
                   margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                   barSize={38}
                 >
+                  {/* linear gradients for bar colors based on status and theme */}
                   <defs>
                     {statusOptions.slice(1).map((status) => (
                       <linearGradient
@@ -311,8 +327,8 @@ function ObservationsList() {
           </div>
         )}
 
-        {/* Empty State */}
-        {observations.length === 0 ? (
+        {/* Empty State / Observations Table Section */}
+        {observations.length === 0 ? ( 
           <div
             className={`rounded-xl shadow-sm p-8 text-center ${
               darkMode ? "bg-gray-800" : "bg-white"
@@ -339,7 +355,7 @@ function ObservationsList() {
           </div>
         ) : (
           <>
-            {/* Filters */}
+            {/* Filters Section */}
             <div
               className={`rounded-xl shadow-sm p-6 mb-8 border ${
                 darkMode
@@ -355,6 +371,7 @@ function ObservationsList() {
                 Filter Observations
               </h3>
               <div className="flex flex-col md:flex-row md:items-end gap-4">
+                {/* Status Filter Dropdown */}
                 <div className="flex-1">
                   <label
                     className={`block text-sm font-medium mb-1 ${
@@ -379,6 +396,7 @@ function ObservationsList() {
                     ))}
                   </select>
                 </div>
+                {/* Severity Filter Dropdown */}
                 <div className="flex-1">
                   <label
                     className={`block text-sm font-medium mb-1 ${
@@ -403,6 +421,7 @@ function ObservationsList() {
                     ))}
                   </select>
                 </div>
+                {/* Reset Filters Button */}
                 <button
                   onClick={() => {
                     setStatusFilter("");
@@ -419,7 +438,7 @@ function ObservationsList() {
               </div>
             </div>
 
-            {/* Observations Table */}
+            {/* Observations Table Section */}
             <div
               className={`rounded-xl shadow-sm overflow-hidden border ${
                 darkMode
@@ -427,6 +446,7 @@ function ObservationsList() {
                   : "bg-white border-gray-100"
               }`}
             >
+              {/* Table Header with count */}
               <div
                 className={`px-6 py-4 border-b ${
                   darkMode ? "border-gray-700" : "border-gray-200"
@@ -448,8 +468,10 @@ function ObservationsList() {
                   observations
                 </div>
               </div>
+              {/* Responsive Table Container */}
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
+                  {/* Table Head */}
                   <thead className={darkMode ? "bg-gray-700" : "bg-gray-50"}>
                     <tr>
                       <th
@@ -489,11 +511,13 @@ function ObservationsList() {
                       </th>
                     </tr>
                   </thead>
+                  {/* Table Body */}
                   <tbody
                     className={`divide-y ${
                       darkMode ? "divide-gray-700" : "divide-gray-200"
                     }`}
                   >
+                    {/* Conditional Rendering for filtered observations or no results message */}
                     {filteredObservations.length > 0 ? (
                       filteredObservations.map((observation) => (
                         <tr
@@ -597,6 +621,7 @@ function ObservationsList() {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div className="flex items-center space-x-2">
+                              {/* View Details Link */}
                               <Link
                                 to={`/observations/${observation.id}`}
                                 className={`${
@@ -608,6 +633,7 @@ function ObservationsList() {
                               >
                                 <EyeIcon className="h-5 w-5" />
                               </Link>
+                              {/* Edit Link */}
                               <Link
                                 to={`/observations/${observation.id}/edit`}
                                 className={`${
@@ -619,6 +645,7 @@ function ObservationsList() {
                               >
                                 <PencilIcon className="h-5 w-5" />
                               </Link>
+                              {/* Delete Button */}
                               <button
                                 onClick={() =>
                                   handleDeleteClick(observation.id)
@@ -637,6 +664,7 @@ function ObservationsList() {
                         </tr>
                       ))
                     ) : (
+                      // Message when no observations match the filters
                       <tr className={darkMode ? "bg-gray-800" : "bg-white"}>
                         <td className="px-6 py-4 text-center" colSpan={5}>
                           <div className="py-8">
@@ -675,5 +703,4 @@ function ObservationsList() {
     </div>
   );
 }
-
 export default ObservationsList;
