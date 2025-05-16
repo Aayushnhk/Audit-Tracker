@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useObservations } from "../contexts/ObservationContext";
-import { useTheme } from "../contexts/ThemeContext"; // Import useTheme
+import { useTheme } from "../contexts/ThemeContext"; 
 
 function CreateObservation() {
   const { addObservation, assignees, addAssignee } = useObservations();
-  const { darkMode } = useTheme(); // Get darkMode from context
-
+  const { darkMode } = useTheme(); 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [severity, setSeverity] = useState("High");

@@ -1,13 +1,13 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useObservations } from "../contexts/ObservationContext";
-import { useTheme } from "../contexts/ThemeContext"; // Import useTheme
+import { useTheme } from "../contexts/ThemeContext"; 
 
 function ObservationDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { observations } = useObservations();
-  const { darkMode } = useTheme(); // Get darkMode from context
+  const { darkMode } = useTheme(); 
 
   const observation = observations.find((obs) => obs.id === id);
 

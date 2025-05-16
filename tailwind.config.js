@@ -41,10 +41,9 @@ export default {
   theme: {
     extend: {
       colors: {
-        // You can add custom colors that work well in both modes
         primary: {
           DEFAULT: '#4f46e5', // indigo-600
-          dark: '#6366f1',    // indigo-500 (lighter for dark mode)
+          dark: '#6366f1',    // indigo-500 
         },
         danger: {
           DEFAULT: '#dc2626', // red-600

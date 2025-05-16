@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useObservations } from "../contexts/ObservationContext";
-import { useTheme } from "../contexts/ThemeContext"; // Import useTheme
+import { useTheme } from "../contexts/ThemeContext"; 
 
 function EditObservationForm() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { observations, updateObservation, assignees, addAssignee } = useObservations();
-  const { darkMode } = useTheme(); // Get darkMode from context
+  const { darkMode } = useTheme(); 
 
   const observation = observations.find((obs) => obs.id === id);
 

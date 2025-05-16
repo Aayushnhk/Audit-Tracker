@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useTheme } from "../contexts/ThemeContext"; // Import useTheme
+import { useTheme } from "../contexts/ThemeContext"; 
 import { useObservations } from "../contexts/ObservationContext";
 import {
   BarChart,
@@ -20,13 +20,13 @@ import {
   ExclamationCircleIcon,
   EyeIcon,
   InformationCircleIcon,
-  PlusIcon, // Added PlusIcon for the "Create Observation" button in the empty state
-  FaceFrownIcon, // Added FaceFrownIcon for the empty state
+  PlusIcon, 
+  FaceFrownIcon, 
 } from "@heroicons/react/24/outline";
 
 function HomePage() {
   const { observations } = useObservations();
-  const { darkMode } = useTheme(); // Get darkMode from context
+  const { darkMode } = useTheme(); 
 
   const statusOptions = ["Open", "In Progress", "Closed"];
   const statusCounts = statusOptions.map((status) => ({
@@ -47,7 +47,7 @@ function HomePage() {
     },
   };
 
-  // Define colors for dark/light modes for the stats cards
+  
   const statsColors = {
     light: {
       "Total Observations": {

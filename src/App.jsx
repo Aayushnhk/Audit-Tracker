@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ObservationProvider } from "./contexts/ObservationContext";
-import { ThemeProvider } from "./contexts/ThemeContext"; // Add this import
+import { ThemeProvider } from "./contexts/ThemeContext"; 
 import Navbar from "./components/Navbar";
 import HomePage from "./components/HomePage";
 import ObservationsList from "./components/ObservationsList";
@@ -11,7 +11,7 @@ import EditObservationForm from "./components/EditObservationForm";
 
 function App() {
   return (
-    <ThemeProvider> {/* Wrap with ThemeProvider */}
+    <ThemeProvider> 
       <ObservationProvider>
         <Router>
           <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
